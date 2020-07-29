@@ -1,11 +1,14 @@
 package principal;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 import java.util.Random;
 import javax.swing.ImageIcon;
+import javax.swing.Timer;
 import javax.swing.JFrame;
 
 public class Game extends JFrame implements KeyListener {
@@ -23,7 +26,11 @@ public class Game extends JFrame implements KeyListener {
     int vidas   = 5;
     int noDelays = 0;
     int vposicaoatual = 14;
+    int intervaloMilissegundos = 800;
     char teclaPressionada;
+    boolean Troca;
+    Timer timer; 
+    
     
     //AQUI DECLARAMOS O NOSSO MENU COM:
     //4 itens, coordenadas x e y = 100, a ativo = true
@@ -31,7 +38,12 @@ public class Game extends JFrame implements KeyListener {
     Menu menuPrincipal = new Menu(4, 100, 100, true);
     ImageIcon fundo = new ImageIcon("src/jogo/Fundo.png");
     ImageIcon lata4 = new ImageIcon("src/jogo/lata4.png");
+    ImageIcon objeto1 = new ImageIcon("src/jogo/objeto1.png");
+    ImageIcon objeto2 = new ImageIcon("src/jogo/objeto2.png");
+    ImageIcon objeto3 = new ImageIcon("src/jogo/objeto3.png");
     ImageIcon objeto4 = new ImageIcon("src/jogo/objeto4.png");
+     
+    
 
     //esse método vai desenhar na tela alguns possíveis cenários do nosso game
     //lá em Menu.java cenario foi definido como -1
@@ -83,22 +95,22 @@ public class Game extends JFrame implements KeyListener {
     }
     
     public void jogar() {
-   Graphics bbg = backBuffer.getGraphics();
-   bbg.setFont(new Font("Arial", Font.BOLD, 20));     
-   bbg.fillRect(0, 0, janelaW, janelaH);
-   bbg.setColor(Color.BLACK);
-   bbg.drawImage(fundo.getImage(), 0, 0, this);
+       Graphics bbg = backBuffer.getGraphics();
+       bbg.setFont(new Font("Arial", Font.BOLD, 20));     
+       bbg.fillRect(0, 0, janelaW, janelaH);
+       bbg.setColor(Color.BLACK);
+       bbg.drawImage(fundo.getImage(), 0, 0, this);
 
    
-   bbg.setColor(Color.BLACK);	//muda a cor!
-   bbg.setFont(new Font("Comic Sans MS", Font.BOLD, 20));// definimos a fonte, o estilo negrito(bold) e o tamanho
-   bbg.drawString("PONTOS: "+xobj, 10, 50);
-   bbg.drawString("VIDAS: "+vidas, 10, 90);
+       bbg.setColor(Color.BLACK);	//muda a cor!
+       bbg.setFont(new Font("Comic Sans MS", Font.BOLD, 20));// definimos a fonte, o estilo negrito(bold) e o tamanho
+       bbg.drawString("PONTOS: "+xobj, 10, 50);
+       bbg.drawString("VIDAS: "+vidas, 10, 90);
    
-   bbg.drawImage(lata4.getImage(), xlata, ylata, 80, 80, this);
+       bbg.drawImage(lata4.getImage(), xlata, ylata, 80, 80, this);
    
-   CairObjetos();
-}
+      CairObjetos();
+    }
 
     public void inicializar() {
         setTitle("Smash Crash");
@@ -205,9 +217,43 @@ public class Game extends JFrame implements KeyListener {
        vidas -= 1;    
     }
     
+    //Troca de objeto a cada 10 segundos 
     
+   // for (int i = 0; i < 10; i++) {
+     //  TrocarObjeto("objeto"+Integer.toString(i));    
+    //}
+    TrocarObjeto();
     
+    if (Troca == true) {
+       System.out.println("Tempo zerou");    
+       Troca = false; 
     }
+    }
+    
+    public void TrocarObjeto() {   
+    ActionListener actionListener = new ActionListener() {
+                    private int contador = 10;
+                    
+
+                    @Override
+                    public void actionPerformed(ActionEvent event) {
+                        if (contador == 0) {
+                            // para o timer
+                            timer.stop();
+                            Troca = true;
+                        } else {
+                           Troca = false;    
+                        }
+                                
+                        contador--;
+                    }
+                };
+    
+   
+      timer = new Timer(intervaloMilissegundos, actionListener);
+      timer.setInitialDelay(0);
+      timer.start();    
+    } 
 
     public void keyReleased(KeyEvent e) {
 
