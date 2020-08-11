@@ -17,6 +17,7 @@ public class Principal extends JFrame implements KeyListener {
     int janelaY = 200;
     int filhaX = 600;
     int filhaY = 200;
+    
 
   
     //esse método vai desenhar na tela alguns possíveis cenários do nosso game
