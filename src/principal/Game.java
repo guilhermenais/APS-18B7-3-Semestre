@@ -40,7 +40,8 @@ public class Game extends JFrame implements KeyListener {
     //4 itens, coordenadas x e y = 100, a ativo = true
     //agora olhe esse método abaixo cenarios()
     Menu menuPrincipal = new Menu(4, 100, 100, true);
-    ImageIcon fundo = new ImageIcon("src/jogo/Fundo.png");
+    ImageIcon fundo = new ImageIcon("src/jogo/fundomenu.png");
+    ImageIcon fundojogo = new ImageIcon("src/jogo/fundojogo.png");
     ImageIcon lata4 = new ImageIcon("src/jogo/lata4.png");
   
     
@@ -53,6 +54,10 @@ public class Game extends JFrame implements KeyListener {
     Sprite objeto1 = new Sprite(4, 200, 300);
     Sprite objeto2 = new Sprite(4, 200, 300);
     Sprite objeto3 = new Sprite(4, 200, 300);
+    
+    Sprite lata = new Sprite(4, 200, 300);
+    
+    
     
    
     //esse método vai desenhar na tela alguns possíveis cenários do nosso game
@@ -94,7 +99,8 @@ public class Game extends JFrame implements KeyListener {
         Graphics g = getGraphics();	//ISSO JÁ ESTAVA AQUI
         Graphics bbg = backBuffer.getGraphics();//ISSO TAMBÉM JÁ ESTAVA AQUI...
         bbg.setColor(Color.WHITE);
-        bbg.fillRect(0, 0, janelaW, janelaH);	//PINTA O FUNDO COM UM QUADRADO BRANCO
+        //bbg.fillRect(0, 0, janelaW, janelaH);	//PINTA O FUNDO COM UM QUADRADO BRANCO
+        bbg.drawImage(fundo.getImage(), 0, 0, this);
 
         menuPrincipal.desenharMenu();//isso desenhará nosso menu
         cenarios();//isso irá desenhar os cenários que escolhermos no menu
@@ -107,23 +113,20 @@ public class Game extends JFrame implements KeyListener {
     }
     
     public void jogar() {
+       Graphics g = getGraphics();	
        Graphics bbg = backBuffer.getGraphics(); 
        bbg.setColor(Color.BLACK);	//muda a cor!
        bbg.setFont(new Font("Comic Sans MS", Font.BOLD, 20));// definimos a fonte, o estilo negrito(bold) e o tamanho
        bbg.fillRect(0, 0, janelaW, janelaH);
-       bbg.drawImage(fundo.getImage(), 0, 0, this);
+       
+       bbg.drawImage(fundojogo.getImage(), 0, 0, this);
 
    
-      
        bbg.drawString("PONTOS: "+yobj, 10, 50);
        bbg.drawString("VIDAS: "+vidas, 10, 90);
        bbg.drawString("Contador: "+contador, 10, 140);
        
        
-       bbg.drawImage(lata4.getImage(), xlata, ylata, 80, 80, this);
-       
-       
-   
       TrocarObjetos(); 
     }
 
@@ -155,22 +158,31 @@ public class Game extends JFrame implements KeyListener {
         objeto1.cenas[1] = new ImageIcon("src/jogo/objeto2.png");
         objeto1.cenas[2] = new ImageIcon("src/jogo/objeto3.png");
         objeto1.cenas[3] = new ImageIcon("src/jogo/objeto4.png");
-        objeto1.largura = 30;	//LARGURA DO VILÃO
-        objeto1.altura = 30;	//ALTURA DO VILÃO , mas não vou usar isso agora.
+        objeto1.largura = 30;	//LARGURA DO OBJETO
+        objeto1.altura = 30;	//ALTURA DO OBJETO , mas não vou usar isso agora.
         
-        objeto2.cenas[0] = new ImageIcon("src/jogo/objeto1.png");
-        objeto2.cenas[1] = new ImageIcon("src/jogo/objeto2.png");
-        objeto2.cenas[2] = new ImageIcon("src/jogo/objeto3.png");
-        objeto2.cenas[3] = new ImageIcon("src/jogo/objeto4.png");
-        objeto2.largura = 30;	//LARGURA DO VILÃO
-        objeto1.altura = 30;	//ALTURA DO VILÃO , mas não vou usar isso agora.
+        objeto2.cenas[0] = new ImageIcon("src/jogo/objeto4.png");
+        objeto2.cenas[1] = new ImageIcon("src/jogo/objeto3.png");
+        objeto2.cenas[2] = new ImageIcon("src/jogo/objeto2.png");
+        objeto2.cenas[3] = new ImageIcon("src/jogo/objeto1.png");
+        objeto2.largura = 30;	//LARGURA DO OBJETO
+        objeto1.altura = 30;	//ALTURA DO OBJETO , mas não vou usar isso agora.
         
         objeto3.cenas[0] = new ImageIcon("src/jogo/objeto1.png");
-        objeto3.cenas[1] = new ImageIcon("src/jogo/objeto2.png");
-        objeto3.cenas[2] = new ImageIcon("src/jogo/objeto3.png");
-        objeto3.cenas[3] = new ImageIcon("src/jogo/objeto4.png");
-        objeto3.largura = 30;	//LARGURA DO VILÃO
-        objeto3.altura = 30;	//ALTURA DO VILÃO , mas não vou usar isso agora.
+        objeto3.cenas[1] = new ImageIcon("src/jogo/objeto4.png");
+        objeto3.cenas[2] = new ImageIcon("src/jogo/objeto2.png");
+        objeto3.cenas[3] = new ImageIcon("src/jogo/objeto3.png");
+        objeto3.largura = 30;	//LARGURA DO OBJETO
+        objeto3.altura = 30;	//ALTURA DO OBJETO , mas não vou usar isso agora.
+        
+        lata.cenas[0] = new ImageIcon("src/jogo/lata2.png");
+        lata.cenas[1] = new ImageIcon("src/jogo/lata1.png");
+        lata.cenas[2] = new ImageIcon("src/jogo/lata4.png");
+        lata.cenas[3] = new ImageIcon("src/jogo/lata3.png");
+        lata.largura = 30;	//LARGURA DO OBJETO
+        lata.altura = 30;	//ALTURA DO OBJETO , mas não vou usar isso agora.
+        
+        
     }
 
     public void run() {
@@ -226,7 +238,12 @@ public class Game extends JFrame implements KeyListener {
     objeto2.animarMaisLento(); //AQUI CHAMEI O MÉTODO ANIMAR MAIS LENTO
     
     bbg.drawImage(objeto3.cenas[objeto1.cena].getImage(), xobj3, yobj, 50, 50, this);
-    objeto3.animarMaisLento(); //AQUI CHAMEI O MÉTODO ANIMAR MAIS LENTO    
+    objeto3.animarMaisLento(); //AQUI CHAMEI O MÉTODO ANIMAR MAIS LENTO   
+    
+    //bbg.drawImage(lata4.getImage(), xlata, ylata, 80, 80, this);
+    bbg.drawImage(lata.cenas[lata.cena].getImage(), xlata, ylata, 80, 80, this);
+      lata.animarMaisLento(); //AQUI CHAMEI O MÉTODO ANIMAR MAIS LENTO  
+    
      CairObjetos();  
     }
     
@@ -243,7 +260,7 @@ public class Game extends JFrame implements KeyListener {
         Random gerador3 = new Random();
       
    
-    //faz os objestos se movimentarem aleatoriamente utilizandon   
+    //faz os objestos se movimentarem aleatoriamente utilizando random.   
     while (vposicaoatual != yobj) {
        yobj += 1;
        }   
