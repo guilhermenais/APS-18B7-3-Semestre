@@ -17,9 +17,7 @@ public class Principal extends JFrame implements KeyListener {
     int janelaY = 200;
     int filhaX = 600;
     int filhaY = 200;
-    
 
-  
     //esse método vai desenhar na tela alguns possíveis cenários do nosso game
     //lá em Menu.java cenario foi definido como -1
     //se cenario == 0 muda a cor do fundo e mostra um texto
@@ -32,9 +30,9 @@ public class Principal extends JFrame implements KeyListener {
         Game obj03 = new Game();
         obj03.setLocation(filhaX, filhaY);
         obj03.run();
-        
+
         bbg.drawImage(backBuffer, 0, 0, this);
-          
+
     }
 
     public void atualizar() {
@@ -58,7 +56,7 @@ public class Principal extends JFrame implements KeyListener {
         backBuffer = new BufferedImage(janelaW, janelaH, BufferedImage.TYPE_INT_RGB);
 
         //AQUI ESTAMOS ADICIONANDO UM ESCUTADOR(OUVINTE) DE TECLAS
-        addKeyListener(this);        
+        addKeyListener(this);
     }
 
     public void run() {

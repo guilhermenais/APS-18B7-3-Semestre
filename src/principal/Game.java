@@ -9,33 +9,35 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 
 public class Game extends JFrame implements KeyListener {
+
     int cenario = 0;
     BufferedImage backBuffer;
     int FPS = 30;
     int janelaW = 500;
     int janelaH = 500;
-    int xlata   = 210;
-    int ylata   = 420;
-    int xobj    = 0;
-    int xobj2   = 200;
-    int xobj3   = 400;
-    int yobj    = 14;
-    int vidas   = 5;
+    int xlata = 210;
+    int ylata = 420;
+    int xobj = 0;
+    int xobj2 = 200;
+    int xobj3 = 400;
+    int yobj = 14;
+    int vidas = 5;
     int noDelays = 0;
-    int objtroca = 1;
-    int contador = 0; 
+    int objtroca = 0;
+    int latatroca = 0;
+    int contador = 0;
     int vposicaoatual = 14;
-    char teclaPressionada; 
-    
+    char teclaPressionada;
+
     ImageIcon cenas[];	//VETOR DE IMAGENS,
-	int x;					//AQUI É A COORDENADA X
-	int y;					//AQUI É A COORDENADA Y
-	int largura;			//LARGURA DA IMAGEM, CASO QUEIRA DEFINIR UMA
-	int altura;				//ALTURA DA IMAGEM, CASO QUEIRA DEFINIR UMA
-	int cena = 0;			//O INDICE DA CENA DA NOSSA SPRITE ANIMADA
-	int controlaVelocidade = 0;
-	int velocidade = 150;
-    
+    int x;					//AQUI É A COORDENADA X
+    int y;					//AQUI É A COORDENADA Y
+    int largura;			//LARGURA DA IMAGEM, CASO QUEIRA DEFINIR UMA
+    int altura;				//ALTURA DA IMAGEM, CASO QUEIRA DEFINIR UMA
+    int cena = 0;			//O INDICE DA CENA DA NOSSA SPRITE ANIMADA
+    int controlaVelocidade = 0;
+    int velocidade = 150;
+
     //AQUI DECLARAMOS O NOSSO MENU COM:
     //4 itens, coordenadas x e y = 100, a ativo = true
     //agora olhe esse método abaixo cenarios()
@@ -43,9 +45,7 @@ public class Game extends JFrame implements KeyListener {
     ImageIcon fundo = new ImageIcon("src/jogo/fundomenu.png");
     ImageIcon fundojogo = new ImageIcon("src/jogo/fundojogo.png");
     ImageIcon lata4 = new ImageIcon("src/jogo/lata4.png");
-  
-    
-    
+
     //ESSA É A NOSSA SPRITE!
     //VERIFIQUE AGORA O MÉTODO inicializar()
     //LÁ VAMOS INICIAR AS IMAGENS QUE VAMOS USAR NESSA SPRITE!
@@ -54,22 +54,19 @@ public class Game extends JFrame implements KeyListener {
     Sprite objeto1 = new Sprite(4, 200, 300);
     Sprite objeto2 = new Sprite(4, 200, 300);
     Sprite objeto3 = new Sprite(4, 200, 300);
-    
+
     Sprite lata = new Sprite(4, 200, 300);
-    
-    
-    
-   
+
     //esse método vai desenhar na tela alguns possíveis cenários do nosso game
     //lá em Menu.java cenario foi definido como -1
     //se cenario == 0 muda a cor do fundo e mostra um texto
     //se cenario == 1 muda a cor do fundo e mostra um texto
     //se cenario == n muda a cor do fundo e mostra um texto...
     //agora obser o nosso método desenharGraficos()
-   public void cenarios() {
+    public void cenarios() {
         Graphics bbg = backBuffer.getGraphics();
         bbg.setFont(new Font("Arial", Font.BOLD, 20));
-        
+
         //aqui você pode escolher o que irá aparecer caso o usuario escolha essa item do menu!
         if (menuPrincipal.cenario == 0) {
             jogar();
@@ -106,28 +103,24 @@ public class Game extends JFrame implements KeyListener {
         cenarios();//isso irá desenhar os cenários que escolhermos no menu
         //agora observe o método inicializar()
 
-        
-        
         //==================================================================================	
         g.drawImage(backBuffer, 0, 0, this);//OBS: ISSO DEVE FICAR SEMPRE NO FINAL!
     }
-    
-    public void jogar() {
-       Graphics g = getGraphics();	
-       Graphics bbg = backBuffer.getGraphics(); 
-       bbg.setColor(Color.BLACK);	//muda a cor!
-       bbg.setFont(new Font("Comic Sans MS", Font.BOLD, 20));// definimos a fonte, o estilo negrito(bold) e o tamanho
-       bbg.fillRect(0, 0, janelaW, janelaH);
-       
-       bbg.drawImage(fundojogo.getImage(), 0, 0, this);
 
-   
-       bbg.drawString("PONTOS: "+yobj, 10, 50);
-       bbg.drawString("VIDAS: "+vidas, 10, 90);
-       bbg.drawString("Contador: "+contador, 10, 140);
-       
-       
-      TrocarObjetos(); 
+    public void jogar() {
+        Graphics g = getGraphics();
+        Graphics bbg = backBuffer.getGraphics();
+        bbg.setColor(Color.BLACK);	//muda a cor!
+        bbg.setFont(new Font("Comic Sans MS", Font.BOLD, 20));// definimos a fonte, o estilo negrito(bold) e o tamanho
+        bbg.fillRect(0, 0, janelaW, janelaH);
+
+        bbg.drawImage(fundojogo.getImage(), 0, 0, this);
+
+        bbg.drawString("PONTOS: " + yobj, 10, 50);
+        bbg.drawString("VIDAS: " + vidas, 10, 90);
+        bbg.drawString("Contador: " + contador, 10, 140);
+
+        TrocarObjetos("objeto");
     }
 
     public void inicializar() {
@@ -151,8 +144,8 @@ public class Game extends JFrame implements KeyListener {
         //desenhar no nosso buffer
         //.. agora para finalizar observe o método de evento keyPressed() mais abaixo...
         menuPrincipal.bbg = backBuffer.getGraphics();
-        
-         //QUI CARREGAMOS AS IMAGENS DE NOSSA SPIRTE!!!!!!!
+
+        //QUI CARREGAMOS AS IMAGENS DE NOSSA SPIRTE!!!!!!!
         //PARA O VETOR DE ImageIcon[] !!!
         objeto1.cenas[0] = new ImageIcon("src/jogo/objeto1.png");
         objeto1.cenas[1] = new ImageIcon("src/jogo/objeto2.png");
@@ -160,29 +153,28 @@ public class Game extends JFrame implements KeyListener {
         objeto1.cenas[3] = new ImageIcon("src/jogo/objeto4.png");
         objeto1.largura = 30;	//LARGURA DO OBJETO
         objeto1.altura = 30;	//ALTURA DO OBJETO , mas não vou usar isso agora.
-        
+
         objeto2.cenas[0] = new ImageIcon("src/jogo/objeto4.png");
         objeto2.cenas[1] = new ImageIcon("src/jogo/objeto3.png");
         objeto2.cenas[2] = new ImageIcon("src/jogo/objeto2.png");
         objeto2.cenas[3] = new ImageIcon("src/jogo/objeto1.png");
         objeto2.largura = 30;	//LARGURA DO OBJETO
         objeto1.altura = 30;	//ALTURA DO OBJETO , mas não vou usar isso agora.
-        
+
         objeto3.cenas[0] = new ImageIcon("src/jogo/objeto1.png");
         objeto3.cenas[1] = new ImageIcon("src/jogo/objeto4.png");
         objeto3.cenas[2] = new ImageIcon("src/jogo/objeto2.png");
         objeto3.cenas[3] = new ImageIcon("src/jogo/objeto3.png");
         objeto3.largura = 30;	//LARGURA DO OBJETO
         objeto3.altura = 30;	//ALTURA DO OBJETO , mas não vou usar isso agora.
-        
-        lata.cenas[0] = new ImageIcon("src/jogo/lata2.png");
-        lata.cenas[1] = new ImageIcon("src/jogo/lata1.png");
-        lata.cenas[2] = new ImageIcon("src/jogo/lata4.png");
-        lata.cenas[3] = new ImageIcon("src/jogo/lata3.png");
+
+        lata.cenas[0] = new ImageIcon("src/jogo/lata1.png");
+        lata.cenas[1] = new ImageIcon("src/jogo/lata2.png");
+        lata.cenas[2] = new ImageIcon("src/jogo/lata3.png");
+        lata.cenas[3] = new ImageIcon("src/jogo/lata4.png");
         lata.largura = 30;	//LARGURA DO OBJETO
         lata.altura = 30;	//ALTURA DO OBJETO , mas não vou usar isso agora.
-        
-        
+
     }
 
     public void run() {
@@ -201,11 +193,11 @@ public class Game extends JFrame implements KeyListener {
     }
 
     public void keyPressed(KeyEvent e) {
+        Graphics bbg = backBuffer.getGraphics();
         //aqui, chamamos os métodos que irá controlar o menu pelo teclado
         menuPrincipal.controlar(e);//esse controla o menu
         menuPrincipal.voltarAoMenu(e);//esse faz voltar para o menu quando pressionarmos "Esc"
-        
-        
+
         //SE A TECLA PRESSIONADA FOR LEFT = ESQUERDA xlata diminue 10
         if (e.getKeyCode() == e.VK_LEFT) {
             xlata -= 10;
@@ -214,95 +206,107 @@ public class Game extends JFrame implements KeyListener {
         if (e.getKeyCode() == e.VK_RIGHT) {
             xlata += 10;
         }
-        
+
+        //SE A TECLA PRESSIONADA FOR UP = CIMA TROCA A LATA
+        if (e.getKeyCode() == e.VK_UP) {
+            TrocarObjetos("lata");
+            latatroca += 1;
+        }
+
+        //SE A TECLA PRESSIONADA FOR DOWN = BAIXO TROCA A LATA
+        if (e.getKeyCode() == e.VK_DOWN) {
+            TrocarObjetos("lata");
+            latatroca -= 1;
+        }
+
+        // SE A LATA TROCADA FOR A LATA 4 E O USUARIO PRESSIONAR CIMA VOLTA PARA A LATA 3 
+        if (latatroca > 3) {
+            latatroca = 0;
+        }
+
+        // SE A LATA TROCADA FOR A LATA 1 E O USUARIO PRESSIONAR BAIXO VOLTA PARA A LATA 1 
+        if (latatroca < 0) {
+            latatroca = 0;
+        }
+
         //TRATAMENTO PARA A LATA NÃO ULTRAPASSAR A BORDA.
         if (xlata == 430) {
-            xlata = 420;   
+            xlata = 420;
         }
-       
+
         if (xlata == -20) {
-            xlata = -10;   
-        } 
+            xlata = -10;
+        }
     }
-    
-    public void TrocarObjetos() {
-    Graphics bbg = backBuffer.getGraphics();
-       
-    //AQUI TO DESENHANDO A O NOSSO PERSONAGEM
-    //VEJA QUE NOSSO vilão tem tudo que agente precisa!
-    //SUAS COORDENADAS, LARGURA, ALTURA, E AS IMAGENS!!!
-    bbg.drawImage(objeto1.cenas[objeto1.cena].getImage(), xobj, yobj, 50, 50, this);
-    objeto1.animarMaisLento(); //AQUI CHAMEI O MÉTODO ANIMAR MAIS LENTO
-    
-    bbg.drawImage(objeto2.cenas[objeto1.cena].getImage(), xobj2, yobj, 50, 50, this);
-    objeto2.animarMaisLento(); //AQUI CHAMEI O MÉTODO ANIMAR MAIS LENTO
-    
-    bbg.drawImage(objeto3.cenas[objeto1.cena].getImage(), xobj3, yobj, 50, 50, this);
-    objeto3.animarMaisLento(); //AQUI CHAMEI O MÉTODO ANIMAR MAIS LENTO   
-    
-    //bbg.drawImage(lata4.getImage(), xlata, ylata, 80, 80, this);
-    bbg.drawImage(lata.cenas[lata.cena].getImage(), xlata, ylata, 80, 80, this);
-      lata.animarMaisLento(); //AQUI CHAMEI O MÉTODO ANIMAR MAIS LENTO  
-    
-     CairObjetos();  
+
+    public void TrocarObjetos(String tipo) {
+        Graphics bbg = backBuffer.getGraphics();
+
+        if (tipo == "objeto") {
+            //AQUI TO DESENHANDO A O NOSSO PERSONAGEM
+            //VEJA QUE NOSSO vilão tem tudo que agente precisa!
+            //SUAS COORDENADAS, LARGURA, ALTURA, E AS IMAGENS!!!
+            bbg.drawImage(objeto1.cenas[objeto1.cena].getImage(), xobj, yobj, 50, 50, this);
+            objeto1.animarMaisLento(); //AQUI CHAMEI O MÉTODO ANIMAR MAIS LENTO
+
+            bbg.drawImage(objeto2.cenas[objeto1.cena].getImage(), xobj2, yobj, 50, 50, this);
+            objeto2.animarMaisLento(); //AQUI CHAMEI O MÉTODO ANIMAR MAIS LENTO
+
+            bbg.drawImage(objeto3.cenas[objeto1.cena].getImage(), xobj3, yobj, 50, 50, this);
+            objeto3.animarMaisLento(); //AQUI CHAMEI O MÉTODO ANIMAR MAIS LENTO   
+        }
+
+        bbg.drawImage(lata.cenas[latatroca].getImage(), xlata, ylata, 100, 100, this);
+
+        CairObjetos();
     }
-    
-        
+
     public void CairObjetos() {
-       
-      if (contador == 4) {
-          objtroca += 1;       
-      } 
-      
-       //instância um objeto da classe Random usando o construtor básico
+
+        if (contador == 4) {
+            objtroca += 1;
+        }
+
+        //instância um objeto da classe Random usando o construtor básico
         Random gerador = new Random();
         Random gerador2 = new Random();
         Random gerador3 = new Random();
-      
-   
-    //faz os objestos se movimentarem aleatoriamente utilizando random.   
-    while (vposicaoatual != yobj) {
-       yobj += 1;
-       }   
-     
-    if (yobj != 454) {
-       vposicaoatual += 5;     
-       }
-    else
-       {
-       //imprime sequência de 10 números inteiros aleatórios entre 0 e 450
-        for (int i = 0; i < 10; i++) {
-            xobj  =  gerador.nextInt(450);
-            xobj2 =  gerador2.nextInt(450);  
-            xobj3 =  gerador3.nextInt(450);           
-         }
-        
-       yobj = 14;   
-       vposicaoatual = 14;  
-       }  
-    
-    //se caso o objeto atingir o chao ele volta para cima e cai novamente.
-    if (xobj == 450)  {
-       xobj = 0;   
-    }   
-    
-    //se algum dos objetos atingir o chao perde uma vida.
-    if (yobj == 449) {
-       vidas -= 1; 
-       contador += 1; 
+
+        //faz os objestos se movimentarem aleatoriamente utilizando random.   
+        while (vposicaoatual != yobj) {
+            yobj += 1;
+        }
+
+        if (yobj != 454) {
+            vposicaoatual += 5;
+        } else {
+            //imprime sequência de 10 números inteiros aleatórios entre 0 e 450
+            for (int i = 0; i < 10; i++) {
+                xobj = gerador.nextInt(450);
+                xobj2 = gerador2.nextInt(450);
+                xobj3 = gerador3.nextInt(450);
+            }
+
+            yobj = 14;
+            vposicaoatual = 14;
+        }
+
+        //se caso o objeto atingir o chao ele volta para cima e cai novamente.
+        if (xobj == 450) {
+            xobj = 0;
+        }
+
+        //se algum dos objetos atingir o chao perde uma vida.
+        if (yobj == 449) {
+            vidas -= 1;
+            contador += 1;
+        }
+
+        //Tratamento para impedir colisão de objetos 
+       
+
     }
-    
-    
-    //Troca de objeto a cada 10 segundos 
-    
-   // for (int i = 0; i < 10; i++) {
-     //  TrocarObjeto("objeto"+Integer.toString(i));    
-    //}
-    
-    
-    
-    }
-    
+
     public void keyReleased(KeyEvent e) {
 
     }
