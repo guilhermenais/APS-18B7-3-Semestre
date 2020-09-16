@@ -5,16 +5,14 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
-import java.util.List;
 
 public class Game extends JFrame implements KeyListener {
 
     private Latas Latas;
     private Objetos Objetos;
-    int cenario = 0;
+    int cenario = -1;
     BufferedImage backBuffer;
     int FPS = 30;
     int janelaW = 500;
@@ -23,25 +21,10 @@ public class Game extends JFrame implements KeyListener {
     int vidas = 5;
     int noDelays = 0;
     int objtroca = 0;
-    int contador = 0;
+    int pontos = 0;
+    boolean ingame = true;
 
     char teclaPressionada;
-
-    //VARIAVEIS DE CORRDENADA DOS OBJETOS
-    int xobj = 0;
-    int yobj = 14;
-    int wobj = 50;
-    int hobj = 50;
-
-    int xobj2 = 200;
-    int yobj2 = 14;
-    int wobj2 = 50;
-    int hobj2 = 50;
-
-    int xobj3 = 400;
-    int yobj3 = 14;
-    int wobj3 = 50;
-    int hobj3 = 50;
 
     ImageIcon cenas[];	//VETOR DE IMAGENS,
     int x;					//AQUI É A COORDENADA X
@@ -58,9 +41,7 @@ public class Game extends JFrame implements KeyListener {
     Menu menuPrincipal = new Menu(4, 100, 100, true);
     ImageIcon fundo = new ImageIcon("src/jogo/fundomenu.png");
     ImageIcon fundojogo = new ImageIcon("src/jogo/fundojogo.png");
-    //ImageIcon lata4 = new ImageIcon("src/jogo/lata4.png");
 
-    //Sprite lata = new Sprite(4, 200, 300);
     //esse método vai desenhar na tela alguns possíveis cenários do nosso game
     //lá em Menu.java cenario foi definido como -1
     //se cenario == 0 muda a cor do fundo e mostra um texto
@@ -96,7 +77,6 @@ public class Game extends JFrame implements KeyListener {
         Graphics g = getGraphics();	//ISSO JÁ ESTAVA AQUI
         Graphics bbg = backBuffer.getGraphics();//ISSO TAMBÉM JÁ ESTAVA AQUI...
         bbg.setColor(Color.WHITE);
-        //bbg.fillRect(0, 0, janelaW, janelaH);	//PINTA O FUNDO COM UM QUADRADO BRANCO
         bbg.drawImage(fundo.getImage(), 0, 0, this);
 
         menuPrincipal.desenharMenu();//isso desenhará nosso menu
@@ -110,20 +90,33 @@ public class Game extends JFrame implements KeyListener {
     public void jogar() {
         Graphics g = getGraphics();
         Graphics bbg = backBuffer.getGraphics();
-        bbg.setColor(Color.BLACK);	//muda a cor!
-        bbg.setFont(new Font("Comic Sans MS", Font.BOLD, 20));// definimos a fonte, o estilo negrito(bold) e o tamanho
-        bbg.fillRect(0, 0, janelaW, janelaH);
 
-        bbg.drawImage(fundojogo.getImage(), 0, 0, this);
+        if (ingame == true) {
 
-        bbg.drawString("PONTOS: " + yobj, 10, 50);
-        bbg.drawString("VIDAS: " + vidas, 10, 90);
-        bbg.drawString("Contador: " + contador, 10, 140);
+            bbg.setColor(Color.BLACK);	//muda a cor!
+            bbg.setFont(new Font("Comic Sans MS", Font.BOLD, 20));// definimos a fonte, o estilo negrito(bold) e o tamanho
+            bbg.fillRect(0, 0, janelaW, janelaH);
 
-        TrocarObjetos();
+            bbg.drawImage(fundojogo.getImage(), 0, 0, this);
+
+            bbg.drawString("PONTOS: " + pontos, 10, 50);
+            bbg.drawString("VIDAS: " + vidas, 10, 90);
+            
+            TrocarObjetos();
+
+        } else {
+            pontos = 0;
+            vidas = 5;
+            ImageIcon fimJogo = new ImageIcon("src/jogo/gameover.png");
+
+            bbg.drawImage(fimJogo.getImage(), 0, 0, null);
+        }
+
     }
 
     public void inicializar() {
+        ImageIcon imagemTituloJanela = new ImageIcon("src/jogo/icon.png");
+        setIconImage(imagemTituloJanela.getImage());
         setTitle("Smash Trash");
         setSize(janelaW, janelaH);
         setResizable(false);
@@ -145,6 +138,7 @@ public class Game extends JFrame implements KeyListener {
         menuPrincipal.itens[3] = "Sair";
         //aqui fazemos o método desenhaMenu() que fica lá em Menu.java
         //desenhar no nosso buffer
+
         //.. agora para finalizar observe o método de evento keyPressed() mais abaixo...
         menuPrincipal.bbg = backBuffer.getGraphics();
     }
@@ -168,27 +162,52 @@ public class Game extends JFrame implements KeyListener {
         //aqui, chamamos os métodos que irá controlar o menu pelo teclado
         menuPrincipal.controlar(e);//esse controla o menu
         menuPrincipal.voltarAoMenu(e);//esse faz voltar para o menu quando pressionarmos "Esc"
+        ingame = true;
     }
 
     public void TrocarObjetos() {
         Graphics bbg = backBuffer.getGraphics();
 
-        bbg.drawImage(Latas.latas1.cenas[Latas.latatroca].getImage(), Latas.getX(), Latas.getY(), 100, 100, this);
-        //bbg.drawImage(Latas.getImagem(), Latas.getX(), Latas.getY(), 100, 100, this);
+        bbg.drawImage(Latas.latas1.cenas[Latas.latatroca].getImage(), Latas.getX(), Latas.getY(), Latas.getAltura(), Latas.getLargura(), this);
         Latas.mexer();
 
-        //CairObjetos();
         bbg.drawImage(Objetos.objeto1.cenas[Objetos.objeto].getImage(), Objetos.getX(), Objetos.getY(), Objetos.getAltura(), Objetos.getLargura(), this);
-        //Objetos.getObjeto() 
         Objetos.mexer();
+
+        checarColisoes();
     }
 
-    public void CairObjetos() {
-        //se algum dos objetos atingir o chao perde uma vida.
-        //  if (yobj == 449) {
-        //   vidas -= 1;
-        //   contador += 1;
-        // }
+    public void checarColisoes() {
+        Graphics g = getGraphics();
+        Graphics bbg = backBuffer.getGraphics();
+
+        Rectangle formaLata = Latas.getBounds();
+        Rectangle formaObj = Objetos.getBounds();
+
+        if (formaObj.intersects(formaLata)) {
+            Objetos.Colisao = true;
+
+            if (Latas.latatroca == Objetos.objeto) {
+                pontos += 1;
+            } else {
+                vidas -= 1;
+            }
+        } else {
+            Objetos.Colisao = false;
+        }
+
+        if (Objetos.getY() == 449) {
+            vidas -= 1;
+        }
+
+        if (vidas == 0) {
+            ingame = false;
+
+            ImageIcon fimJogo = new ImageIcon("src/jogo/gameover.png");
+
+            bbg.drawImage(fimJogo.getImage(), 0, 0, this);
+        }
+
     }
 
     private class TecladoAdapter extends KeyAdapter {

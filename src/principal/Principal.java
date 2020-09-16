@@ -54,7 +54,6 @@ public class Principal extends JFrame implements KeyListener {
 
     public void inicializar() {
         backBuffer = new BufferedImage(janelaW, janelaH, BufferedImage.TYPE_INT_RGB);
-
         //AQUI ESTAMOS ADICIONANDO UM ESCUTADOR(OUVINTE) DE TECLAS
         addKeyListener(this);
     }
@@ -91,4 +90,6 @@ public class Principal extends JFrame implements KeyListener {
     public void keyTyped(KeyEvent e) {
 
     }
+    
+    
 }

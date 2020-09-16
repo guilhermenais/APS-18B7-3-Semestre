@@ -16,6 +16,7 @@ public class Objetos {
     int objeto = 0;
     private boolean isVisivel;
     private int vposicaoatual = 14;
+    boolean Colisao = false;
     ImageIcon cenas[];	//VETOR DE IMAGENS
 
     Sprite objeto1 = new Sprite(4, 200, 300);
@@ -29,9 +30,6 @@ public class Objetos {
         objeto1.cenas[2] = new ImageIcon("src/jogo/objeto3.png");
         objeto1.cenas[3] = new ImageIcon("src/jogo/objeto4.png");
 
-        ImageIcon referencia = new ImageIcon("src/jogo/objeto1.png");
-        imagem = referencia.getImage();
-
         altura = 50;//imagem.getHeight(100);
         largura = 50;//imagem.getWidth(100);
 
@@ -44,9 +42,7 @@ public class Objetos {
         //instância um objeto da classe Random usando o construtor básico
         Random gerador = new Random();
         Random TrocaObj = new Random();
-        // Random gerador2 = new Random();
-        //Random gerador3 = new Random();
-
+        
         //faz os objestos se movimentarem aleatoriamente utilizando random.   
         while (vposicaoatual != this.y) {
             this.y += 1;
@@ -54,25 +50,35 @@ public class Objetos {
 
         if (this.y != 454) {
             vposicaoatual += 5;
+
+            if (Colisao == true) {
+                this.y = 14;
+                vposicaoatual = 14;
+
+                for (int i = 0; i < 10; i++) {
+                    this.x = gerador.nextInt(450);
+                }
+            }
+
         } else {
             //imprime sequência de 10 números inteiros aleatórios entre 0 e 450
             for (int i = 0; i < 10; i++) {
                 this.x = gerador.nextInt(450);
-                //xobj2 = gerador2.nextInt(450);
-                //xobj3 = gerador3.nextInt(450);
             }
 
             this.y = 14;
             vposicaoatual = 14;
         }
-        //se caso o objeto atingir o chao ele volta para cima e cai novamente.
+
+        //se caso o objeto atingir o chao ou hover colisao com a lata ele volta para cima e cai novamente.  
         if (this.x == 450) {
             this.x = 0;
         }
 
-       //Troca os objetos aleatoriamente 
+        //Troca os objetos aleatoriamente 
         if (vposicaoatual == 14) {
             this.objeto = TrocaObj.nextInt(4);
+
         }
 
     }
@@ -95,10 +101,6 @@ public class Objetos {
 
     public Image getImagem() {
         return imagem;
-    }
-
-    public boolean isVisivel() {
-        return isVisivel;
     }
 
     public void setVisivel(boolean isVisivel) {
