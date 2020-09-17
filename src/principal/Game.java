@@ -59,14 +59,17 @@ public class Game extends JFrame implements KeyListener {
         if (menuPrincipal.cenario == 1) {
             bbg.setColor(new Color(100, 255, 100));
             bbg.fillRect(0, 0, janelaW, janelaH);
-            bbg.setColor(Color.BLACK);
-            bbg.drawString("Você escolheu Opções", 100, 200);
+            ImageIcon opcoes = new ImageIcon("src/jogo/opcoes.png");
+
+            bbg.drawImage(opcoes.getImage(), 0, 0, this);
         }
         if (menuPrincipal.cenario == 2) {
             bbg.setColor(new Color(100, 100, 255));
             bbg.fillRect(0, 0, janelaW, janelaH);
-            bbg.setColor(Color.BLACK);
-            bbg.drawString("Você escolheu Ajuda", 100, 200);
+            ImageIcon creditos = new ImageIcon("src/jogo/creditos.png");
+
+            bbg.drawImage(creditos.getImage(), 0, 0, this);
+            
         }
         if (menuPrincipal.cenario == 3) {
             System.exit(0);//esse comando fecha o nosso game!
@@ -107,6 +110,8 @@ public class Game extends JFrame implements KeyListener {
         } else {
             pontos = 0;
             vidas = 5;
+            
+            
             ImageIcon fimJogo = new ImageIcon("src/jogo/gameover.png");
 
             bbg.drawImage(fimJogo.getImage(), 0, 0, null);
@@ -134,7 +139,7 @@ public class Game extends JFrame implements KeyListener {
         //aqui definimos o texto de cada item do nosso menu
         menuPrincipal.itens[0] = "Jogar";
         menuPrincipal.itens[1] = "Opções";
-        menuPrincipal.itens[2] = "Ajuda";
+        menuPrincipal.itens[2] = "Créditos";
         menuPrincipal.itens[3] = "Sair";
         //aqui fazemos o método desenhaMenu() que fica lá em Menu.java
         //desenhar no nosso buffer
@@ -202,8 +207,9 @@ public class Game extends JFrame implements KeyListener {
 
         if (vidas == 0) {
             ingame = false;
-
+            
             ImageIcon fimJogo = new ImageIcon("src/jogo/gameover.png");
+           
 
             bbg.drawImage(fimJogo.getImage(), 0, 0, this);
         }
